@@ -1,0 +1,61 @@
+<!-- admin_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+        <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-credit-card mr-2"></i> View Cards
+                </a><li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> manage_cards</a></li>
+                <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center">
+                    transfer_balance
+                </a></li>
+                <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="flex-grow p-5">
+            <div class="container mx-auto">
+                <div class="bg-white shadow-md rounded-lg p-6 max-w-md">
+                    <h1 class="text-2xl font-bold mb-6 text-gray-800">Create a New Transfer</h1>
+                    <form method="POST" class="space-y-4">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.sender_card_number.id }}">
+                                {{ form.sender_card_number.label.text }}
+                            </label>
+                            {{ form.sender_card_number(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.receiver_card_number.id }}">
+                                {{ form.receiver_card_number.label.text }}
+                            </label>
+                            {{ form.receiver_card_number(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.amount.id }}">
+                                {{ form.amount.label.text }}
+                            </label>
+                            {{ form.amount(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                        </div>
+                        <div class="flex items-center justify-between">
+                            {{ form.submit(class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
+                            <a href="{{ url_for('login') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                                Back to Transfers
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

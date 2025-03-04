@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+ 
+ <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+        <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-credit-card mr-2"></i> View Cards
+                </a> 
+                     <li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-file-upload mr-2"></i> My cards</a></li>
+                     <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center">
+                        <i class="fas fa-file-upload mr-2"></i>Transfer_balance
+                    </a></li>
+                     <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="flex-grow p-5">    
+    <!-- Main Content -->
+    <div class="container mx-auto p-8">
+        <h1 class="text-x font-bold text-gray-800 mb-8">Manage Your Cards</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Card Table Section -->
+          
+            <!-- Card Form Section -->
+            <div class="bg-gray-200 p-8 rounded-lg shadow-lg text-x ">
+                <h5 class="text-x font-semibold text-gray-800 mb-6">Add a New Card</h5>
+                
+                <form method="POST" class="text-xs">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4 text-xs">
+                        {{ form.card_number.label(class="block text-gray-700 text-x font-bold mb-2") }}
+                        {{ form.card_number(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    </div>
+                    
+                    <div class="mb-4 text-xs">
+                        {{ form.cardholder_name.label(class="block text-gray-700 text-x font-bold mb-2") }}
+                        {{ form.cardholder_name(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    </div>
+    
+    
+                    <div class="mt-6 text-xs">
+                        {{ form.submit(class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline") }}
+                    </div>
+                </form>
+            </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg text-xs">
+            <h5 class="text-x font-semibold text-gray-600 mb-6">Your Cards</h5>
+            {% if cards %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-fixed bg-white shadow border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-700 uppercase text-x font-semibold">
+                            <th class="py-3 px-6 border-b w-1/4">Card Number</th>
+                            <!-- <th class="py-3 px-6 border-b w-1/4">Cardholder Name</th> -->
+                            <!-- <th class="py-3 px-6 border-b w-1/4">Expiry Date</th> -->
+                            <th class="py-3 px-6 border-b w-1/4">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-x">
+                        {% for card in cards %}
+                            <tr class="hover:bg-gray-50 transition duration-150">
+                                <td class="py-4 px-6 border-b text-center">{{ card.card_number }}</td>
+                                <!-- <td class="py-4 px-6 border-b text-center">{{ card.cardholder_name }}</td> -->
+                                <!-- <td class="py-4 px-6 border-b text-center">{{ card.expiry_date }}</td> -->
+                                <td class="py-4 px-6 border-b text-center">
+                                    <span class="{% if card.balance > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                                        FRW {{ card.balance }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-gray-500 mt-4">No cards added yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Monthly Transactions per Card</h1>
+    {% for card_number, data in cards.items() %}
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Card: {{ card_number }}</h2>
+        <canvas id="chart-{{ card_number }}" width="400" height="200"></canvas>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% for card_number, data in cards.items() %}
+    new Chart(document.getElementById('chart-{{ card_number }}').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: {{ data.months | tojson }},
+            datasets: [{
+                label: 'Total Amount',
+                data: {{ data.amounts | tojson }},
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Amount'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                }
+            }
+        }
+    });
+    {% endfor %}
+</script>
+{% endblock %}

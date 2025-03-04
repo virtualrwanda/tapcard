@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tap & TopUp  System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-800">
+    <header class="bg-blue-900 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Tap& TopUp</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="{{ url_for('home') }}" class="hover:underline">Home</a></li>
+                    <li><a href="{{ url_for('login') }}" class="hover:underline">Login</a></li>
+                     </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-10 text-center">
+        <h2 class="text-4xl font-bold mb-6 text-white">Welcome to the Tap& TopUp </h2>
+        <p class="text-lg mb-4 text-white">Easily Access to Tap& TopUp resources and </p>
+        <a href="{{ url_for('login') }}" class="bg-blue-500 text-white px-6 py-3 rounded-lg inline-block mr-4">Login</a>
+       <!-- 
+        <a href="{{ url_for('register') }}" class="bg-gray-700 text-white px-6 py-3 rounded-lg inline-block">Register</a>
+   
+        -->  </main>
+
+    <footer class="bg-gray-800 text-white p-4 mt-10">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Sliviya . All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

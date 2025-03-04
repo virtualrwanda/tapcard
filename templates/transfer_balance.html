@@ -1,0 +1,122 @@
+<!-- admin_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+                <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+                    <li>
+                        <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                            <i class="fas fa-credit-card mr-2"></i> View Cards
+                        </a><li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> manage_cards</a></li>
+                        <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center">
+                            <i class="fas fa-users mr-2"></i> transfer_balance
+                        </a></li>
+                             <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+                </ul>
+            </div>
+
+    <div class="flex-grow p-5">
+        <div class="max-w-lg mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="bg-blue-600 text-white px-6 py-4">
+                    <h1 class="text-xl font-bold flex items-center">
+                        <i class="fas fa-exchange-alt mr-3"></i>Transfer Balance
+                    </h1>
+                </div>
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="px-6 py-4 {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} border-l-4 {% if category == 'success' %}border-green-500{% else %}border-red-500{% endif %} rounded-lg my-4 mx-6">
+                                {% if category == 'success' %}
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-circle mr-2"></i>
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <!-- Transfer Form -->
+                <div class="p-6">
+                    <form method="POST" action="{{ url_for('transfer_balance') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-6">
+                            <label for="{{ form.sender_card_number.id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                                <i class="fas fa-credit-card mr-2"></i>From Card
+                            </label>
+                            <div class="relative">
+                                {{ form.sender_card_number(class="shadow appearance-none border rounded w-full py-3 px-4 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500", placeholder="Enter your card number") }}
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-credit-card text-gray-400"></i>
+                                </div>
+                            </div>
+                            {% if form.sender_card_number.errors %}
+                                <p class="text-red-500 text-xs italic mt-1">{{ form.sender_card_number.errors[0] }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="{{ form.receiver_card_number.id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                                <i class="fas fa-credit-card mr-2"></i>To Card
+                            </label>
+                            <div class="relative">
+                                {{ form.receiver_card_number(class="shadow appearance-none border rounded w-full py-3 px-4 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500", placeholder="Enter recipient's card number") }}
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-credit-card text-gray-400"></i>
+                                </div>
+                            </div>
+                            {% if form.receiver_card_number.errors %}
+                                <p class="text-red-500 text-xs italic mt-1">{{ form.receiver_card_number.errors[0] }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="{{ form.amount.id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                                <i class="fas fa-money-bill-wave mr-2"></i>Amount
+                            </label>
+                            <div class="relative">
+                                {{ form.amount(class="shadow appearance-none border rounded w-full py-3 px-4 pl-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500", placeholder="Enter amount to transfer") }}
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-dollar-sign text-gray-400"></i>
+                                </div>
+                            </div>
+                            {% if form.amount.errors %}
+                                <p class="text-red-500 text-xs italic mt-1">{{ form.amount.errors[0] }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-8">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out w-full flex justify-center items-center">
+                                <i class="fas fa-paper-plane mr-2"></i>Transfer Funds
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                    <a href="{{ url_for('manage_cards') }}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to My Cards
+                    </a>
+                </div>
+        
+    </div>
+    </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 mt-10">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Slivi System. All rights reserved.</p>
+        </div>
+    </footer>

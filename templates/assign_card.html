@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-1/5 bg-gray-800 text-white p-6">
+            <h2 class="text-lg font-bold mb-4">Admin Dashboard</h2>
+            <ul class="space-y-3">
+                <li><a href="{{ url_for('admin_dashboard') }}" class="hover:text-gray-300">Dashboard</a></li>
+                <li><a href="{{ url_for('register') }}" class="hover:text-gray-300">Register</a></li>
+                <li><a href="{{ url_for('view_users_and_cards') }}" class="hover:text-gray-300">Client Cards</a></li>
+                <li><a href="{{ url_for('admanage_cards') }}" class="text-gray-300 hover:text-white">Manage Cards</a></li>
+                <li><a href="{{ url_for('assign_card') }}" class="text-gray-300 hover:text-white">Assign Card</a></li>
+                <li><a href="{{ url_for('logout') }}" class="hover:text-gray-300">Logout</a></li>
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-grow p-6">
+            <div class="container mx-auto bg-white p-6 shadow-md rounded-lg">
+                <h1 class="text-2xl font-bold mb-6">Manage Cards</h1>
+                
+                <h2 class="text-lg font-semibold mb-4">Assign Card to User</h2>
+                <form method="POST" class="space-y-6 bg-gray-50 p-6 rounded-lg shadow">
+                    {{ form.hidden_tag() }}
+                    
+                    <div>
+                        <label for="user_id" class="block font-medium mb-1">Select User:</label>
+                        {{ form.user_id(class="w-full p-3 border border-gray-300 rounded focus:ring focus:ring-blue-300") }}
+                    </div>
+                    
+                    <div>
+                        <label for="card_number" class="block font-medium mb-1">Card Number:</label>
+                        {{ form.card_number(class="w-full p-3 border border-gray-300 rounded focus:ring focus:ring-blue-300") }}
+                    </div>
+                    
+                    <div>
+                        <label for="cardholder_name" class="block font-medium mb-1">Cardholder Name:</label>
+                        {{ form.cardholder_name(class="w-full p-3 border border-gray-300 rounded focus:ring focus:ring-blue-300") }}
+                    </div>
+                    
+                    <div>
+                        <label for="balance" class="block font-medium mb-1">Initial Balance:</label>
+                        {{ form.balance(class="w-full p-3 border border-gray-300 rounded focus:ring focus:ring-blue-300") }}
+                    </div>
+                    
+                    <div>
+                        <label for="expiry_date" class="block font-medium mb-1">Expiry Date (YYYY-MM-DD):</label>
+                        {{ form.expiry_date(class="w-full p-3 border border-gray-300 rounded focus:ring focus:ring-blue-300") }}
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Assign Card</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

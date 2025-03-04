@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body class="flex bg-gray-100 text-gray-800">
+    <!-- Side Navigation Bar -->
+    <div class="w-64 h-screen bg-gray-900 text-white p-5 hidden sm:block">
+        <h2 class="text-lg font-semibold mb-4"> {{ username }}</h2>
+        <ul class="space-y-4">
+            <li><a href="{{ url_for('logout') }}" class="flex items-center text-gray-300 hover:text-blue-400"><i class="fas fa-home mr-2"></i> Home</a></li>
+            <li><a href="{{ url_for('add_card') }}" class="flex items-center text-gray-300 hover:text-blue-400"><i class="fas fa-file-upload mr-2"></i>add_card</a></li>
+              <li><a href="{{ url_for('logout') }}" class="flex items-center text-gray-300 hover:text-blue-400"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow p-6">
+<h5>Add Payment Card</h5>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.card_number.label }}<br>
+        {{ form.card_number(size=32) }}<br>
+        {% for error in form.card_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.cardholder_name.label }}<br>
+        {{ form.cardholder_name(size=32) }}<br>
+        {% for error in form.cardholder_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.expiry_date.label }}<br>
+        {{ form.expiry_date(size=32) }}<br>
+        {% for error in form.expiry_date.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.cvv.label }}<br>
+        {{ form.cvv(size=32) }}<br>
+        {% for error in form.cvv.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+</div>
+</div>
+</body>
+</html>

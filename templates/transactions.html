@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+ 
+ <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+    }
+  </style>
+</head>
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+        <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-credit-card mr-2"></i> View Cards
+                </a><li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> manage_cards</a></li>
+            <li><a href="{{ url_for('transactions') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-file-upload mr-2"></i> Transaction</a></li>
+            <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="flex-grow p-5">
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-4 text-sm text-{{ 'green' if category == 'success' else 'red' }}-700 bg-{{ 'green' if category == 'success' else 'red' }}-100 rounded-lg">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Transaction Form -->
+        <div class="bg-gray-200 p-6 rounded-lg shadow-md">
+            <h5 class="text-2xl font-semibold mb-4">New Transaction</h5>
+            <form method="POST" action="{{ url_for('transactions') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700">Card Number</label>
+                    {{ form.card_number(class="w-full p-2 border rounded") }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700">Amount</label>
+                    {{ form.amount(class="w-full p-2 border rounded") }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700">Transaction Type</label>
+                    {{ form.transaction_type(class="w-full p-2 border rounded") }}
+                </div>
+
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
+            </form>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+        <h4 class="text-xl font-bold mb-4">Update my Balance </h4>
+        <p class="text-3 font-bold mb-4">is Done by vending machine</p>
+        
+        <form method="POST" action="{{ url_for('topup') }}">
+            <div class="mb-4">
+                <label for="card_number" class="text-xs block text-gray-700 text-x font-bold mb-2">Card Number</label>
+                <input type="text" name="card_number" class="text-xs shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="amount" class="text-xs block text-gray-700 text-x font-bold mb-2">Top-Up Amount</label>
+                <input type="number" name="amount" min="1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mt-6">
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Top Up</button>
+            </div>
+        </form>
+        
+    </div>
+</div>
+        <!-- Transactions Table -->
+        <div class="mt-8">
+            <h6 class="text-x font-semibold mb-4">Your Transactions</h6>
+            <table class="min-w-full bg-gray-100 rounded-lg shadow-md text-x">
+                <thead class="bg-gray-200 text-gray-600">
+                    <tr>
+                        <th class="py-2 px-4 border-b">Transaction ID</th>
+                        <th class="py-2 px-4 border-b">Card Number</th>
+                        <th class="py-2 px-4 border-b">Amount</th>
+                        <th class="py-2 px-4 border-b">Type</th>
+                        <th class="py-2 px-4 border-b">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr>
+                            <td class="py-2 px-4 border-b">{{ transaction.id }}</td>
+                            <td class="py-2 px-4 border-b">{{ transaction.card_number }}</td>
+                            <td class="py-2 px-4 border-b">{{ transaction.amount }}</td>
+                            <td class="py-2 px-4 border-b">{{ transaction.transaction_type }}</td>
+                            <td class="py-2 px-4 border-b">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-500">No transactions available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

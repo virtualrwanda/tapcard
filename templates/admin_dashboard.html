@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+
+
+        <aside class="w-1/5 bg-gray-800 text-white">
+            <h2 class="text-lg font-bold p-4">Admin Dashboard</h2>
+                <ul class="space-y-3 p-4 ">
+                    <li><a href="{{ url_for('admin_dashboard') }}" class="hover:text-gray-300">
+                        <i class="fas fa-credit-card mr-2"></i> Dashboard</a></li>
+                       <li><a href="{{ url_for('register') }}" class="hover:text-gray-300">
+                        <i class="fas fa-credit-card mr-2"></i> register</a></li>
+                    <li><a href="{{ url_for('view_users_and_cards') }}" class="hover:text-gray-300">
+                        <i class="fas fa-credit-card mr-2"></i> View Cards</a></li>
+                    <li><a href="{{ url_for('admanage_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                        <i class="fas fa-credit-card mr-2"></i>    Cards
+                    </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-gray-300">Logout</a></li>
+                </ul>     
+        </aside>
+        
+
+        <!-- Main Content -->
+        <main class="flex-grow p-6">
+            <!-- <a href="{{ url_for('create_transfer') }}">Create New Transfer</a> -->
+            <h1 class="text-xs font-bold mb-6">Welcome, {{ username }}</h1>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-green-200 p-4 shadow rounded-lg">
+                    <h3 class="text-lg font-semibold">Total Users</h3>
+                    <p class="text-2xl font-bold">{{ total_users }}</p>
+                </div>
+        
+                <div class="bg-red-200 p-4 shadow rounded-lg">
+                    <h3 class="text-lg font-semibold">Total Transactions</h3>
+                    <p class="text-2xl font-bold">{{ total_transactions }}</p>
+                </div>
+            </div>
+
+            <!-- Recent Transactions Table -->
+            <div class="bg-gray p-6 shadow rounded-lg mb-6">
+                <h2 class="text-l font-bold mb-4">Recent Transactions</h2>
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr>
+                            <th class="border-b p-2">ID</th>
+                            <th class="border-b p-2">Type</th>
+                            <th class="border-b p-2">Amount</th>
+                            <th class="border-b p-2">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td class="border-b p-2">{{ t.id }}</td>
+                            <td class="border-b p-2">{{ t.transaction_type }}</td>
+                            <td class="border-b p-2">{{ t.amount }}</td>
+                            <td class="border-b p-2">{{ t.timestamp }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 shadow rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">User Roles</h2>
+                    <canvas id="rolesChart"></canvas>
+                </div>
+                <div class="bg-white p-6 shadow rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">Transaction Types</h2>
+                    <canvas id="transactionsChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Render User Roles Chart
+        const rolesData = {{ roles_data | tojson }};
+        const rolesCtx = document.getElementById('rolesChart').getContext('2d');
+        new Chart(rolesCtx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(rolesData),
+                datasets: [{
+                    data: Object.values(rolesData),
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            }
+        });
+
+        // Render Transactions Chart
+        const transactionsData = {{ transactions_data | tojson }};
+        const transactionsCtx = document.getElementById('transactionsChart').getContext('2d');
+        new Chart(transactionsCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(transactionsData),
+                datasets: [{
+                    data: Object.values(transactionsData),
+                    backgroundColor: '#36A2EB'
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

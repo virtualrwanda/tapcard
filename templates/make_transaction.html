@@ -1,0 +1,39 @@
+<!-- add_card.html -->
+{% extends "base.html" %}
+{% block content %}
+<h5>Add Payment Card</h5>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.card_number.label }}<br>
+        {{ form.card_number(size=32) }}<br>
+        {% for error in form.card_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.cardholder_name.label }}<br>
+        {{ form.cardholder_name(size=32) }}<br>
+        {% for error in form.cardholder_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.expiry_date.label }}<br>
+        {{ form.expiry_date(size=32) }}<br>
+        {% for error in form.expiry_date.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.cvv.label }}<br>
+        {{ form.cvv(size=32) }}<br>
+        {% for error in form.cvv.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex">
+    <!-- Mobile Toggle Button -->
+    <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 z-10 p-2 bg-blue-600 text-white rounded-full focus:outline-none">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white h-screen shadow-md p-5 fixed lg:relative transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800"> Dashboard</h2>
+        <ul class="space-y-4">
+            <li>
+                <a href="{{ url_for('upload_file') }}" class="flex items-center text-gray-700 font-semibold hover:text-blue-500 transition-colors">
+                    <i class="fas fa-upload mr-2"></i> Upload File
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('view_uploads') }}" class="flex items-center text-gray-700 font-semibold hover:text-blue-500 transition-colors">
+                    <i class="fas fa-file-alt mr-2"></i> View Uploads
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('logout') }}" class="flex items-center text-gray-700 font-semibold hover:text-blue-500 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-10 lg:ml-64">
+        <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Uploaded Files</h1>
+            
+            {% if files %}
+                <ul class="divide-y divide-gray-200">
+                    {% for file in files %}
+                    <li class="py-4 flex items-center justify-between">
+                        <span class="text-lg text-gray-700">{{ file }}</span>
+                        <div>
+                            <a href="{{ url_for('edit_upload', filename=file) }}" class="text-blue-600 font-semibold hover:text-blue-500 transition-colors">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ url_for('delete_upload', filename=file) }}" method="POST" class="inline">
+                                <button type="submit" class="text-red-600 font-semibold hover:text-red-500 transition-colors ml-4">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500">No files uploaded yet.</p>
+            {% endif %}
+
+            <div class="mt-6">
+                <a href="{{ url_for('upload_file') }}" class="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-500 transition-colors">
+                    <i class="fas fa-upload"></i> Upload New File
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+</body>
+</html>

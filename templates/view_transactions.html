@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-5">Transaction History</h1>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-2 px-4 text-left">Transaction ID</th>
+                        <th class="py-2 px-4 text-left">User ID</th>
+                        <th class="py-2 px-4 text-left">Amount</th>
+                        <th class="py-2 px-4 text-left">Transaction Type</th>
+                        <th class="py-2 px-4 text-left">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transactions in transactions %}
+                    <tr class="border-b">
+                        <td class="py-2 px-4">{{ transaction.id }}</td>
+                        <td class="py-2 px-4">{{ transaction.user_id }}</td>
+                        <td class="py-2 px-4">${{ transaction.amount }}</td>
+                        <td class="py-2 px-4">{{ transaction.transaction_type }}</td>
+                        <td class="py-2 px-4">{{ transaction.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="py-2 px-4 text-center">No transactions found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{{ url_for('some_route') }}" class="mt-5 inline-block text-blue-500 hover:underline">Go Back</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-1/5 bg-gray-800 text-white">
+            <h2 class="text-lg font-bold p-4">Admin Dashboard</h2>
+                <ul class="space-y-3 p-4 ">
+                    <li><a href="{{ url_for('admin_dashboard') }}" class="hover:text-gray-300">Dashboard</a></li>
+                       <li><a href="{{ url_for('register') }}" class="hover:text-gray-300">register</a></li>
+                    <li><a href="{{ url_for('view_users_and_cards') }}" class="hover:text-gray-300">View Users and Cards</a></li>
+                    
+                    <li><a href="{{ url_for('admanage_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                        Manage Cards
+                    </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-gray-300">Logout</a></li>
+                </ul>
+     
+            
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-grow p-6">
+    <div class="container mx-auto py-8">
+        <h1 class="text-2xl font-bold mb-6">Users and Their Cards</h1>
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <table class="min-w-full bg-white border border-gray-500 text-xs">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">Username</th>
+                        <th class="py-2 px-4 border-b">Role</th>
+                        <th class="py-2 px-4 border-b">Card Number</th>
+                        <th class="py-2 px-4 border-b">Cardholder Name</th>
+                        <th class="py-2 px-4 border-b">Balance</th>
+                        <th class="py-2 px-4 border-b">Expiry Date</th>
+                        <th class="py-2 px-4 border-b">Total Transactions</th>
+                        <th class="py-2 px-4 border-b">Predicted Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% for card in user.cards %}
+                            <tr>
+                                <td class="py-2 px-4 border-b">{{ user.username }}</td>
+                                <td class="py-2 px-4 border-b">{{ user.role }}</td>
+                                <td class="py-2 px-4 border-b">{{ card.card_number }}</td>
+                                <td class="py-2 px-4 border-b">{{ card.cardholder_name }}</td>
+                                <td class="py-2 px-4 border-b">${{ card.balance }}</td>
+                                <td class="py-2 px-4 border-b">{{ card.expiry_date }}</td>
+                                <td class="py-2 px-4 border-b">${{ card.total_monthly_transactions }}</td>
+                                <td class="py-2 px-4 border-b">${{ card.predicted_cost }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

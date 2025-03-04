@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+        <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-credit-card mr-2"></i> View Cards
+                </a><li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> My cards</a></li>
+            <li><a href="{{ url_for('/transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-file-upload mr-2"></i> Transfer_balance</a></li>
+            <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="flex-grow p-5">
+<body class="bg-gray-100 p-6">
+    <div class="container mt-5">
+        <h1 class="text-center">Card Details</h1>
+        <form id="cardForm" class="mt-4">
+            <div class="mb-3">
+                <label for="cardNumber" class="form-label">Enter Card Number</label>
+                <input type="text" id="cardNumber" class="form-control" placeholder="Enter your card number" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Get Details</button>
+        </form>
+
+        <div id="cardDetails" class="mt-5" style="display: none;">
+            <h2>Card Information</h2>
+            <p><strong>Card Number:</strong> <span id="cardNumberDisplay"></span></p>
+            <p><strong>Cardholder Name:</strong> <span id="cardholderName"></span></p>
+            <p><strong>Expiry Date:</strong> <span id="expiryDate"></span></p>
+            <p><strong>CVV:</strong> <span id="cvv"></span></p>
+            <p><strong>Balance:</strong> $<span id="balance"></span></p>
+            <p><strong>Total Monthly Transactions:</strong> $<span id="monthlyTransactions"></span></p>
+        </div>
+
+        <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('cardForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const cardNumber = document.getElementById('cardNumber').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const cardDetails = document.getElementById('cardDetails');
+            
+            // Clear previous results
+            errorMessage.style.display = 'none';
+            cardDetails.style.display = 'none';
+
+            try {
+                const response = await fetch('/card-details', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ card_number: cardNumber }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch card details');
+                }
+
+                // Display card details
+                document.getElementById('cardNumberDisplay').textContent = data.card_number;
+                document.getElementById('cardholderName').textContent = data.cardholder_name;
+                document.getElementById('expiryDate').textContent = data.expiry_date;
+                document.getElementById('cvv').textContent = data.cvv;
+                document.getElementById('balance').textContent = data.balance.toFixed(2);
+                document.getElementById('monthlyTransactions').textContent = data.total_monthly_transactions.toFixed(2);
+
+                cardDetails.style.display = 'block';
+            } catch (error) {
+                // Display error message
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html

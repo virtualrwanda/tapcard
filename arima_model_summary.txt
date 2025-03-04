@@ -1,0 +1,25 @@
+                               SARIMAX Results                                
+==============================================================================
+Dep. Variable:                   Cost   No. Observations:                   20
+Model:                 ARIMA(1, 1, 1)   Log Likelihood                -176.402
+Date:                Mon, 20 Jan 2025   AIC                            358.804
+Time:                        16:20:51   BIC                            361.637
+Sample:                    01-31-2024   HQIC                           359.284
+                         - 08-31-2025                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.9997    124.486      0.008      0.994    -242.989     244.988
+ma.L1         -0.9997    124.893     -0.008      0.994    -245.785     243.786
+sigma2       6.82e+06      0.008   8.04e+08      0.000    6.82e+06    6.82e+06
+===================================================================================
+Ljung-Box (L1) (Q):                   3.94   Jarque-Bera (JB):                 0.87
+Prob(Q):                              0.05   Prob(JB):                         0.65
+Heteroskedasticity (H):               0.72   Skew:                             0.22
+Prob(H) (two-sided):                  0.69   Kurtosis:                         2.05
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+[2] Covariance matrix is singular or near-singular, with condition number 1.98e+24. Standard errors may be unstable.

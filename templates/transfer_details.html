@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Transfer Details</title>
+</head>
+<body>
+    <h1>Transfer Details</h1>
+    <p><strong>Sender:</strong> {{ transfer.sender_card_number }}</p>
+    <p><strong>Receiver:</strong> {{ transfer.receiver_card_number }}</p>
+    <p><strong>Amount:</strong> ${{ transfer.amount }}</p>
+    <p><strong>Date:</strong> {{ transfer.date }}</p>
+    <a href="{{ url_for('login') }}">Back to Transfers</a>
+</body>
+</html>

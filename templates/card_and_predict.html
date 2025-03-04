@@ -1,0 +1,97 @@
+<!-- admin_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="flex bg-red-100">
+    <div class="w-1/5 h-screen bg-gray-800 p-5">
+        <h2 class="text-white text-lg font-semibold mb-4">Admn [{{ username }}]</h2>
+        <ul class="space-y-2">
+            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-credit-card mr-2"></i> View Cards
+                </a><li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> My cards</a></li>
+                <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center">
+                    <i class="fas fa-file-upload mr-2"></i>  transfer_balance
+                </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+        </ul>
+    </div>
+    <div class="flex-grow p-5">
+  <h1 class="text-xl font-bold text-gray-800 mb-6">Card and Prediction</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-4 text-xs text-{{ 'green' if category == 'success' else 'red' }}-700 bg-{{ 'green' if category == 'success' else 'red' }}-100 rounded-lg">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Card Details -->
+        <div id="cardDetails" class="bg-gray-50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch card details and predictions
+        async function fetchCardDetails() {
+            try {
+                const response = await fetch('/capredict');
+                if (!response.ok) throw new Error(await response.text());
+
+                const data = await response.json();
+                renderCards(data);
+            } catch (error) {
+                document.getElementById('cardDetails').innerHTML = `
+                    <div class="bg-gray-500 col-span-1 md:col-span-2 lg:col-span-3 ">
+                        <p class="bg-gray-500 text-red-600 font-bold">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render cards in the DOM
+        function renderCards(cards) {
+            const container = document.getElementById('cardDetails');
+            container.innerHTML = '';
+
+            if (cards.length === 0) {
+                container.innerHTML = `
+                    <div class=" bg-gray-500 col-span-1 md:col-span-2 lg:col-span-3">
+                        <p class="text-gray-600 font-semibold">No card data available.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cards.forEach(card => {
+                const cardElement = `
+                    <div class="bg-red-300 shadow-md rounded-lg p-6 text-xs">
+                        <h3 class="text-l font-bold text-gray-800 mb-2">Card Number: ${card.card_number}</h3>
+                        <p class="text-white-600 mb-1"><strong>Cardholder:</strong> ${card.cardholder_name}</p>
+                        <p class="text-white-600 mb-1"><strong>Balance:</strong> ${card.balance.toFixed(2)} fr</p>
+                        <p class="text-white-600 mb-1"><strong>Total Transactions:</strong> ${card.total_monthly_transactions.toFixed(2)} fr</p>
+                        <p class="text-yellow-600 font-semibold"><strong>Predicted Cost:</strong> ${card.predicted_cost.toFixed(2)}  fr</p>
+                    </div>
+                `;
+                container.innerHTML += cardElement;
+            });
+        }
+
+        // Load card details on page load
+        document.addEventListener('DOMContentLoaded', fetchCardDetails);
+    </script>
+</body>
+</html>
