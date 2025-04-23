@@ -1201,7 +1201,45 @@ def assign_card():
 # def index():
 #     transfers = Transfer.query.order_by(Transfer.date.desc()).all()
 #     return render_template('index.html', transfers=transfers)
+# Form for requesting card report
+class ReportRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired()])
+    submit = SubmitField('Request Report')
 
+@app.route('/request_report', methods=['GET', 'POST'])
+def request_report():
+    form = ReportRequestForm()
+    if form.validate_on_submit():
+        user_email = form.email.data
+        user_id = session.get('user_id')  # Assuming user ID is stored in session
+
+        # Fetch user's cards
+        cards = Card.query.filter_by(user_id=user_id).all()
+        if not cards:
+            flash('No cards found for your account.', 'warning')
+            return redirect(url_for('request_report'))
+
+        # Prepare email content
+        message_body = f"Report for your cards:\n\n"
+        for card in cards:
+            message_body += f"Card Number: {card.card_number}\n"
+            message_body += f"Cardholder Name: {card.cardholder_name}\n"
+            message_body += f"Balance: {card.balance}\n"
+            message_body += f"Expiry Date: {card.expiry_date}\n\n"
+
+        # Send email
+        msg = Message("Your Card Report", sender=app.config['MAIL_USERNAME'], recipients=[user_email])
+        msg.body = message_body
+        try:
+            mail.send(msg)
+            flash('Report sent successfully!', 'success')
+        except Exception as e:
+            flash(f'Error sending email: {str(e)}', 'danger')
+
+        return redirect(url_for('request_report'))
+
+    return render_template('request_report.html', form=form)
+    
 @app.route('/create', methods=['GET', 'POST'])
 @role_required('admin')
 def create_transfer():
@@ -1285,6 +1323,6 @@ def start_all_periodic_reports():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Create database tables
-    threading.Thread(target=start_all_periodic_reports).start()
+        db.create_all()  # Create database table/s
+    # threading.Thread(target=start_all_periodic_reports).start()
     app.run(host='0.0.0.0', port=5000, debug=False)
