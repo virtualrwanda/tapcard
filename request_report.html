@@ -1,42 +1,45 @@
-<!-- admin_dashboard.html -->
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>user Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Request User Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .alert { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .alert-success { background-color: #d4edda; color: #155724; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="email"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="submit"] { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #0056b3; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
-<body class="flex bg-red-100">
-    <div class="w-1/5 h-screen bg-gray-800 p-5">
-        <h2 class="text-white text-lg font-semibold mb-4">User [{{ username }}]</h2>
-        <ul class="space-y-2">
-            <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
-<!--             <li> -->
-<!--                 <a href="{{ url_for('view_cards') }}" class="text-gray-300 hover:text-white flex items-center">
-                    <i class="fas fa-credit-card mr-2"></i> View Cards
-                </a>-->
-            <li> 
-                    <a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> manage_cards</a></li>
-                <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center">
-                    <i class="fas fa-credit-card mr-2"></i>    transfer_balance
-                </a></li>
-               
-            <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
-        </ul>
-    </div>
-    <div class="flex-grow p-5">
-      
-      <form method="POST">
+<body>
+    <h1>Request User Report</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
         {{ form.hidden_tag() }}
-        <div>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}<br>
-            {% for error in form.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
+        <div class="form-group">
+            {{ form.recipient_email.label }}<br>
+            {{ form.recipient_email(size=30) }}<br>
+            {% for error in form.recipient_email.errors %}
+                <span style="color: red;">{{ error }}</span><br>
             {% endfor %}
         </div>
-        <div>
+        <div class="form-group">
             {{ form.submit() }}
         </div>
     </form>
+    <a href="{{ url_for('client_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
