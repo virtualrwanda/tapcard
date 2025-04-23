@@ -1282,6 +1282,8 @@ def transfer_details(transfer_id):
 #             thread.daemon = True
 #             thread.start()
 #             print(f"Started periodic reports for user {user.id} to {recipient_email}")
+from email_validator import validate_email, EmailNotValidError  # Add for email validation
+import re
 
 def send_user_report(user_id, recipient_email):
     with app.app_context():
@@ -1336,7 +1338,17 @@ def send_report_route():
         return jsonify({"error": "Not logged in"}), 401
 
     user_id = session['user_id']
-    recipient_email = f"{session['username']}@yourdomain.com"  # Derive email from username
+    # Sanitize username to create a valid email local part
+    username = session['username']
+    sanitized_username = re.sub(r'[^a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]', '', username)
+    recipient_email = f"{sanitized_username}@vrt.rw"  # Use your domain
+
+    # Validate email format
+    try:
+        validate_email(recipient_email, check_deliverability=False)
+    except EmailNotValidError as e:
+        flash('Invalid email address format. Please contact support.', 'danger')
+        return jsonify({"error": f"Invalid email address: {str(e)}"}), 400
 
     result = send_user_report(user_id, recipient_email)
     if result == "Email sent successfully":
