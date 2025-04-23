@@ -23,13 +23,25 @@
         </ul>
     </div>
     <div class="flex-grow p-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-4">
+              {% for category, message in messages %}
+                <div class="p-4 {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-lg">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
         <h3 class="text-lg font-semibold mb-4">Data from Vender Machines</h3>
-               </div>
+        <!-- Search Form -->
+      
+        </div>
         <!-- PDF Viewer -->
     </div>
     <script>
         function viewPDF(url) {
-            // Show the PDF viewer section
             document.getElementById("pdfViewer").classList.remove("hidden");
             const loadingTask = pdfjsLib.getDocument(decodeURIComponent(url));
             loadingTask.promise.then(pdf => {
@@ -40,7 +52,6 @@
                     const context = canvas.getContext('2d');
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-
                     const renderContext = {
                         canvasContext: context,
                         viewport: viewport
