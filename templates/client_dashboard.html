@@ -27,7 +27,10 @@
     </div>
     <div class="flex-grow p-5">
         <h3 class="text-lg font-semibold mb-4">Data  from vender_machines</h3>
-        
+       
+      
+        <p><a href="{{ url_for('request_report') }}">Request User Report Email</a></p>
+<!-- Existing dashboard content -->
         <!-- Search Form -->
         <form method="GET" action="{{ url_for('client_dashboard') }}" class="flex mb-4">
             <input type="text" name="search" placeholder="Search files" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request.args.get('search', '') }}">
