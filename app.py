@@ -1223,6 +1223,66 @@ def transfer_details(transfer_id):
     transfer = Transfer.query.get_or_404(transfer_id)
     return render_template('transfer_details.html', transfer=transfer)
 
+# def send_user_report(user_id, recipient_email):
+#     with app.app_context():
+#         user = User.query.get(user_id)
+#         if not user:
+#             print(f"User {user_id} not found.")
+#             return "User not found"
+
+#         cards = Card.query.filter_by(user_id=user.id).all()
+#         transactions = Transaction.query.filter_by(user_id=user.id).all()
+#         files = FileUpload.query.filter_by(username=user.username).all()
+
+#         message_body = f"A NOVEL AI_IoT BASED TAP AND GO CARD FOR INTELLIGENT SYSTEM AND MANAGEMENT  {user.username}:\n\n"
+#         message_body += f"Username: {user.username}\n"
+#         message_body += f"Role: {user.role}\n\n"
+
+#         message_body += "Cards:\n"
+#         for card in cards:
+#             message_body += f"  Card Number: {card.card_number}\n"
+#             message_body += f"  Cardholder Name: {card.cardholder_name}\n"
+#             message_body += f"  Balance: {card.balance}\n"
+#             message_body += f"  Expiry Date: {card.expiry_date}\n\n"
+
+#         message_body += "Transactions:\n"
+#         for transaction in transactions:
+#             message_body += f"  Amount: {transaction.amount}\n"
+#             message_body += f"  Type: {transaction.transaction_type}\n"
+#             message_body += f"  Card Number: {transaction.card_number}\n"
+#             message_body += f"  Timestamp: {transaction.timestamp}\n\n"
+
+#         message_body += "Uploaded Files:\n"
+#         for file in files:
+#             message_body += f"  Filename: {file.filename}\n"
+#             message_body += f"  Description: {file.description}\n\n"
+
+#         msg = Message("User Report", sender=app.config['MAIL_USERNAME'], recipients=[recipient_email])
+#         msg.body = message_body
+
+#         try:
+#             mail.send(msg)
+#             print(f"Email sent successfully to {recipient_email} for user {user_id}")
+#             return "Email sent successfully"
+#         except Exception as e:
+#             print(f"Error sending email: {e}")
+#             return f"Error sending email: {e}"
+
+# def send_reports_periodically(user_id, recipient_email, interval_seconds=1080): #3 minutes = 180 seconds
+#     while True:
+#         send_user_report(user_id, recipient_email)
+#         time.sleep(interval_seconds)
+
+# def start_all_periodic_reports():
+#     with app.app_context():
+#         users = User.query.all()
+#         for user in users:
+#             recipient_email = f"{user.username}" #Replace with actual email format
+#             thread = threading.Thread(target=send_reports_periodically, args=(user.id, recipient_email))
+#             thread.daemon = True
+#             thread.start()
+#             print(f"Started periodic reports for user {user.id} to {recipient_email}")
+
 def send_user_report(user_id, recipient_email):
     with app.app_context():
         user = User.query.get(user_id)
@@ -1268,23 +1328,30 @@ def send_user_report(user_id, recipient_email):
             print(f"Error sending email: {e}")
             return f"Error sending email: {e}"
 
-def send_reports_periodically(user_id, recipient_email, interval_seconds=1080): #3 minutes = 180 seconds
-    while True:
-        send_user_report(user_id, recipient_email)
-        time.sleep(interval_seconds)
+@app.route('/send-report', methods=['POST'])
+@role_required('client')
+def send_report_route():
+    if 'user_id' not in session or 'username' not in session:
+        flash('You need to log in first!', 'danger')
+        return jsonify({"error": "Not logged in"}), 401
 
-def start_all_periodic_reports():
-    with app.app_context():
-        users = User.query.all()
-        for user in users:
-            recipient_email = f"{user.username}" #Replace with actual email format
-            thread = threading.Thread(target=send_reports_periodically, args=(user.id, recipient_email))
-            thread.daemon = True
-            thread.start()
-            print(f"Started periodic reports for user {user.id} to {recipient_email}")
+    user_id = session['user_id']
+    recipient_email = f"{session['username']}@yourdomain.com"  # Derive email from username
+
+    result = send_user_report(user_id, recipient_email)
+    if result == "Email sent successfully":
+        flash('Report sent successfully!', 'success')
+        return jsonify({"message": result}), 200
+    elif result == "User not found":
+        flash('User not found.', 'danger')
+        return jsonify({"error": result}), 404
+    else:
+        flash('Error sending report.', 'danger')
+        return jsonify({"error": result}), 500
+
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables
-    threading.Thread(target=start_all_periodic_reports).start()
+    # threading.Thread(target=start_all_periodic_reports).start()
     app.run(host='0.0.0.0', port=5000, debug=False)
