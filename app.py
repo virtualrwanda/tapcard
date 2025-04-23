@@ -1341,7 +1341,7 @@ def send_report_route():
     # Sanitize username to create a valid email local part
     username = session['username']
     sanitized_username = re.sub(r'[^a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]', '', username)
-    recipient_email = f"{sanitized_username}@vrt.rw"  # Use your domain
+    recipient_email = f"{sanitized_username}"  # Use your domain
 
     # Validate email format
     try:
