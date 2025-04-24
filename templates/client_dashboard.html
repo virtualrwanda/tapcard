@@ -13,12 +13,12 @@
             <li><a href="{{ url_for('x') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a></li>
             <li><a href="{{ url_for('manage_cards') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-users mr-2"></i> Manage Cards</a></li>
             <li><a href="{{ url_for('transfer_balance') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-credit-card mr-2"></i> Transfer Balance</a></li>
-            <li>
-                <form action="{{ url_for('send_report_route') }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="text-gray-300 hover:text-white flex items-center w-full text-left"><i class="fas fa-envelope mr-2"></i> Send Report</button>
-                </form>
-            </li>
+           <li>
+            <form action="{{ url_for('send_report_route') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="text-gray-300 hover:text-white flex items-center w-full text-left"><i class="fas fa-envelope mr-2"></i> Send Report</button>
+            </form>
+        </li>           
             <li><a href="{{ url_for('logout') }}" class="text-gray-300 hover:text-white flex items-center"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
         </ul>
     </div>
