@@ -1282,8 +1282,7 @@ def transfer_details(transfer_id):
 #             thread.daemon = True
 #             thread.start()
 #             print(f"Started periodic reports for user {user.id} to {recipient_email}")
-from email_validator import validate_email, EmailNotValidError  # Add for email validation
-import re
+
 
 def send_user_report(user_id, recipient_email):
     with app.app_context():
@@ -1338,16 +1337,22 @@ def send_report_route():
         return jsonify({"error": "Not logged in"}), 401
 
     user_id = session['user_id']
-    # Sanitize username to create a valid email local part
     username = session['username']
+    # Sanitize username to create a valid email local part
     sanitized_username = re.sub(r'[^a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]', '', username)
-    recipient_email = f"{sanitized_username}"  # Use your domain
+    if not sanitized_username:
+        # If sanitization results in an empty string, use a fallback username
+        sanitized_username = f"user{user_id}"
+        print(f"Warning: Username '{username}' sanitized to empty; using fallback 'user{user_id}'")
+
+    recipient_email = f"{sanitized_username}@vrt.rw"
 
     # Validate email format
     try:
         validate_email(recipient_email, check_deliverability=False)
     except EmailNotValidError as e:
-        flash('Invalid email address format. Please contact support.', 'danger')
+        print(f"Invalid email for username '{username}': {recipient_email}")
+        flash('Unable to send report due to invalid username format. Please contact support.', 'danger')
         return jsonify({"error": f"Invalid email address: {str(e)}"}), 400
 
     result = send_user_report(user_id, recipient_email)
@@ -1360,6 +1365,7 @@ def send_report_route():
     else:
         flash('Error sending report.', 'danger')
         return jsonify({"error": result}), 500
+
 
 
 if __name__ == '__main__':
