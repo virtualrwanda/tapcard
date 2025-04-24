@@ -18,6 +18,8 @@ from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail, Message
 import threading
 import time
+from email_validator import validate_email, EmailNotValidError
+import re
 app = Flask(__name__)
 csrf = CSRFProtect(app)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -1345,7 +1347,7 @@ def send_report_route():
         sanitized_username = f"user{user_id}"
         print(f"Warning: Username '{username}' sanitized to empty; using fallback 'user{user_id}'")
 
-    recipient_email = f"{sanitized_username}@vrt.rw"
+    recipient_email = f"{sanitized_username}@gmail.com"
 
     # Validate email format
     try:
