@@ -1340,21 +1340,28 @@ def send_report_route():
 
     user_id = session['user_id']
     username = session['username']
+    
     # Sanitize username to create a valid email local part
-    sanitized_username = re.sub(r'[^a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]', '', username)
-    if not sanitized_username:
-        # If sanitization results in an empty string, use a fallback username
-        sanitized_username = f"user{user_id}"
-        print(f"Warning: Username '{username}' sanitized to empty; using fallback 'user{user_id}'")
+    # sanitized_username = re.sub(r'[^a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]', '', username)
+    # if not sanitized_username:
+    #     # If sanitization results in an empty string, use a fallback username
+    #     sanitized_username = f"user{user_id}"
+    #     print(f"Warning: Username '{username}' sanitized to empty; using fallback 'user{user_id}'")
 
-    recipient_email = f"{sanitized_username}@gmail.com"
+    # Check if the sanitized username already contains a domain
+    if '@' not in username:
+        # Append a valid domain if no domain is found
+        recipient_email = f"{username}@gmail.com"  # Replace 'gmail.com' with the domain you want
+    else:
+        # If the username already has a domain, use it as is
+        recipient_email = username
 
-    # Validate email format
+    # Validate email format (optional, but recommended)
     try:
-        validate_email(recipient_email, check_deliverability=False)
+        validate_email(recipient_email, check_deliverability=True)
     except EmailNotValidError as e:
         print(f"Invalid email for username '{username}': {recipient_email}")
-        flash('Unable to send report due to invalid username format. Please contact support.', 'danger')
+        flash('Unable to send report due to invalid email format. Please contact support.', 'danger')
         return jsonify({"error": f"Invalid email address: {str(e)}"}), 400
 
     result = send_user_report(user_id, recipient_email)
@@ -1367,7 +1374,6 @@ def send_report_route():
     else:
         flash('Error sending report.', 'danger')
         return jsonify({"error": result}), 500
-
 
 
 if __name__ == '__main__':
