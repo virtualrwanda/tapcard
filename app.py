@@ -1374,6 +1374,9 @@ def send_report_route():
     else:
         flash('Error sending report.', 'danger')
         return jsonify({"error": result}), 500
+    return render_template('transfer_balance.html')
+    
+        
 
 
 if __name__ == '__main__':
